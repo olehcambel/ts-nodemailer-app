@@ -1,39 +1,42 @@
-// import {SentMessageInfo} from 'nodemailer'
 import * as nodemailer from 'nodemailer';
 import * as joi from 'joi';
+
 import { logger } from '../common/logger';
 
 // let id /*: number*/ = 0;
 
 const schema = joi.object({
   from: joi.string().required(),
-  to: joi.alternatives([
-    joi.string(),
-    joi.array().items(joi.string())
-  ]).required() ,
+  to: joi.alternatives([joi.string(), joi.array().items(joi.string())]).required(),
   subject: joi.string(),
   text: joi.string(),
   html: joi.string(),
   random: joi.boolean(),
 });
 
-interface MailerOptions {
-  service: string;
+interface AuthCred {
   user: string;
   pass: string;
+}
+
+interface MailerAuth {
+  service: string;
+  auth: AuthCred;
+}
+
+interface MailerAuthTest {
+  host: string;
+  auth: AuthCred;
 }
 
 export class MailerService {
   private readonly transporter: nodemailer.Transporter;
 
-  constructor({ service, user, pass }: MailerOptions) {
-    this.transporter = nodemailer.createTransport({
-      service: service,
-      auth: { user, pass },
-    });
+  constructor(opts: MailerAuth | MailerAuthTest) {
+    this.transporter = nodemailer.createTransport(opts);
   }
-
-  async sendMail(opts: nodemailer.SendMailOptions): Promise<void> {
+  // TODO: handle {file: any}
+  async sendMail(opts: nodemailer.SendMailOptions, file: any): Promise<void> {
     await joi.validate(opts, schema);
 
     // if(!Array.isArray(opts.to)) opts.to = opts.to.split(',')
@@ -42,7 +45,7 @@ export class MailerService {
 
     logger.info(`Sending email ${opts.from} -> ${opts.to}`);
 
-    await this.transporter.sendMail(opts);
+    await this.transporter.sendMail({ attachments: file, ...opts });
 
     logger.info(`Email was sent`);
   }

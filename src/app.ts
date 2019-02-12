@@ -3,24 +3,18 @@ import cors from 'cors';
 import boom from 'boom';
 import { JoiObject } from 'joi';
 
-import { MailerService } from './services/mailer.service';
 import { logger } from './common/logger';
-import * as config from '../config';
 import { asyncWrap } from './common/async-wrap';
+import { appController } from './controllers/app.controller';
 
 const app = express();
-const mailer = new MailerService(config.nodemailer);
 asyncWrap();
 
-const bodyParser = [express.json(), express.urlencoded({ extended: true })];
+const bodyParser = [express.urlencoded({ extended: true }), express.json()];
 app.use(cors({ optionsSuccessStatus: 200 }));
 
 app.post('*', bodyParser);
-
-app.post('/', async (req, res) => {
-  await mailer.sendMail(req.body);
-  return res.status(200).json({ message: 'ok' });
-});
+app.use('/', appController);
 
 app.use((req, _res, next) => {
   next(boom.notFound(`Cannot ${req.method} on ${req.path}`));

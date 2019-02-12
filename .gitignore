@@ -84,3 +84,5 @@ config.ts
 
 # TypeScript dist folder
 /dist
+/static
+/uploads

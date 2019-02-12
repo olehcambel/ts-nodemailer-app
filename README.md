@@ -1,5 +1,4 @@
-<code> cp config.example.js config.js \
-<code> npm i
+<code> cp config.example.js config.js && npm i
 
 <b> Send Mail ~ POST "/"
 
