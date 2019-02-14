@@ -1,10 +1,8 @@
 exports.nodemailer = {
-  auth: {
-    user: 'USER',
-    pass: 'PASS',
-  },
-  service: 'SERVICE', // SendGrid | gmail | FastMail etc
-  // or {host: 'smtp.ethereal.email'}
+  user: 'USER',
+  pass: 'PASS',
+  // service: 'SERVICE', // SendGrid | gmail | FastMail etc
+  host: 'smtp.ethereal.email',
 };
 
 exports.server = {

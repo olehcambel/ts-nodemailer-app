@@ -11,35 +11,30 @@ const schema = joi.object({
   subject: joi.string(),
   text: joi.string(),
   html: joi.string(),
-  random: joi.boolean(),
 });
 
-interface AuthCred {
+interface MailerAuth {
+  host: string;
+  service?: string;
+  port?: number;
   user: string;
   pass: string;
-}
-
-interface MailerAuth {
-  service: string;
-  auth: AuthCred;
-}
-
-interface MailerAuthTest {
-  host: string;
-  auth: AuthCred;
 }
 
 export class MailerService {
   private readonly transporter: nodemailer.Transporter;
 
-  constructor(opts: MailerAuth | MailerAuthTest) {
-    this.transporter = nodemailer.createTransport(opts);
+  constructor({ host, port, user, pass }: MailerAuth) {
+    this.transporter = nodemailer.createTransport({
+      host,
+      port: port || 587,
+      secure: false,
+      auth: { user, pass },
+    });
   }
   // TODO: handle {file: any}
   async sendMail(opts: nodemailer.SendMailOptions, file: any): Promise<void> {
     await joi.validate(opts, schema);
-
-    // if(!Array.isArray(opts.to)) opts.to = opts.to.split(',')
 
     if (!opts.subject) opts.subject = 'ᅠ';
 
