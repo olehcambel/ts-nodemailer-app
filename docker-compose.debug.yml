@@ -1,0 +1,10 @@
+version '3.7'
+
+services:
+  ts-nodemailer-app:
+    build: .
+    NODE_ENV: development
+  ports:
+    - 3001:3001
+    - 9229:9229
+  command: node --inspect=0.0.0.0:9229 src/main.ts
