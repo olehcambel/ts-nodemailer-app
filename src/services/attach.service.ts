@@ -11,7 +11,7 @@ export interface FileStreamOutput {
 }
 
 export class AttachService {
-  static fileStream({ originalname, path }: FileStream): FileStreamOutput {
+  static fileStream({ path, originalname }: FileStream): FileStreamOutput {
     return {
       filename: originalname,
       content: createReadStream(path),

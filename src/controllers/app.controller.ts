@@ -16,7 +16,7 @@ router.post('/', multer, async (req, res, next) => {
     await mailer.sendMail(req.body, file);
   } catch (err) {
     req.file && (await AttachService.removeFile(req.file));
-    next(err);
+    return next( err );
   }
 
   req.file && (await AttachService.removeFile(req.file));
